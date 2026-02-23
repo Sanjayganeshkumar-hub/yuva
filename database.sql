@@ -1,31 +1,31 @@
-CREATE DATABASE IF NOT EXISTS tiffin_service;
-USE tiffin_service;
+-- PostgreSQL Compatible Database Schema
+-- Created for Render deployment
 
--- Table for menu
-CREATE TABLE IF NOT EXISTS menu (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    day VARCHAR(20),
-    meal_type VARCHAR(20),
-    items VARCHAR(200)
+DROP TABLE IF EXISTS selections;
+DROP TABLE IF EXISTS menu;
+DROP TABLE IF EXISTS admin;
+
+CREATE TABLE menu (
+    id SERIAL PRIMARY KEY,
+    day VARCHAR(20) NOT NULL,
+    meal_type VARCHAR(20) NOT NULL,
+    items TEXT NOT NULL
 );
 
--- Table for customer selections
-CREATE TABLE IF NOT EXISTS selections (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    customer_name VARCHAR(100),
-    day VARCHAR(20),
-    meal_type VARCHAR(20),
-    status VARCHAR(20) DEFAULT 'Pending'
+CREATE TABLE selections (
+    id SERIAL PRIMARY KEY,
+    customer_name VARCHAR(100) NOT NULL,
+    day VARCHAR(20) NOT NULL,
+    meal_type VARCHAR(20) NOT NULL,
+    status VARCHAR(20) DEFAULT 'Pending',
+    selection_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Admin table
-CREATE TABLE IF NOT EXISTS admin (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50),
-    password VARCHAR(50)
+CREATE TABLE admin (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL
 );
 
--- Default Admin Account
-INSERT INTO admin (username, password) 
-SELECT 'admin', 'admin123'
-WHERE NOT EXISTS (SELECT 1 FROM admin WHERE username = 'admin');
+-- Insert default admin
+INSERT INTO admin (username, password) VALUES ('admin', 'admin123');
