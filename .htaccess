@@ -1,0 +1,16 @@
+DirectoryIndex index.php
+Options -Indexes
+
+# Basic security
+<Files "db.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files "database.sql">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files "Dockerfile">
+    Order Allow,Deny
+    Deny from all
+</Files>
