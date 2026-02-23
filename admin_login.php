@@ -3,13 +3,14 @@ session_start();
 include "db.php";
 
 if (isset($_POST['login'])) {
-    $user = mysqli_real_escape_string($conn, $_POST['username']);
-    $pass = mysqli_real_escape_string($conn, $_POST['password']);
+    $user = $_POST['username'];
+    $pass = $_POST['password'];
     
     // In a real app, passwords should be hashed. Using plain text as per the doc appendix.
-    $query = mysqli_query($conn, "SELECT * FROM admin WHERE username='$user' AND password='$pass'");
+    $stmt = $conn->prepare("SELECT * FROM admin WHERE username = :user AND password = :pass");
+    $stmt->execute(['user' => $user, 'pass' => $pass]);
     
-    if (mysqli_num_rows($query) > 0) {
+    if ($stmt->fetch(PDO::FETCH_ASSOC)) {
         $_SESSION['admin'] = $user;
         header("Location: admin_dashboard.php");
         exit();

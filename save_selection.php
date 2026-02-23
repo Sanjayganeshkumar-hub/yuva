@@ -2,16 +2,16 @@
 include "db.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = mysqli_real_escape_string($conn, $_POST['name']);
-    $day = mysqli_real_escape_string($conn, $_POST['day']);
-    $meal = mysqli_real_escape_string($conn, $_POST['meal_type']);
+    $name = $_POST['name'];
+    $day = $_POST['day'];
+    $meal = $_POST['meal_type'];
 
-    $query = "INSERT INTO selections (customer_name, day, meal_type, status) VALUES ('$name', '$day', '$meal', 'Pending')";
-    
-    if (mysqli_query($conn, $query)) {
+    try {
+        $stmt = $conn->prepare("INSERT INTO selections (customer_name, day, meal_type, status) VALUES (:name, :day, :meal, 'Pending')");
+        $stmt->execute(['name' => $name, 'day' => $day, 'meal' => $meal]);
         $message = "Meal Selected Successfully!";
-    } else {
-        $message = "Error: " . mysqli_error($conn);
+    } catch(PDOException $e) {
+        $message = "Error: " . $e->getMessage();
     }
 }
 ?>

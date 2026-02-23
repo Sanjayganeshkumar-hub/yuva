@@ -27,18 +27,21 @@
         
         <?php
         $day_today = date("l"); 
-        $result = mysqli_query($conn, "SELECT * FROM menu WHERE day='$day_today'");
+        $stmt = $conn->prepare("SELECT * FROM menu WHERE day = :day");
+        $stmt->execute(['day' => $day_today]);
         
         echo "<h3 style='text-align:center;'>Today is $day_today</h3>";
         
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                echo "<div class='menu-item'>";
-                echo "<b>Meal Type:</b> " . htmlspecialchars($row['meal_type']) . "<br>";
-                echo "<b>Items:</b> " . htmlspecialchars($row['items']);
-                echo "</div>";
-            }
-        } else {
+        $items_found = false;
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $items_found = true;
+            echo "<div class='menu-item'>";
+            echo "<b>Meal Type:</b> " . htmlspecialchars($row['meal_type']) . "<br>";
+            echo "<b>Items:</b> " . htmlspecialchars($row['items']);
+            echo "</div>";
+        }
+        
+        if (!$items_found) {
             echo "<p style='text-align:center;'>No menu items listed for today ($day_today).</p>";
         }
         ?>

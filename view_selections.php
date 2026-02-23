@@ -3,7 +3,7 @@ session_start();
 include "db.php";
 if (!isset($_SESSION['admin'])) { header("Location: admin_login.php"); exit(); }
 
-$result = mysqli_query($conn, "SELECT * FROM selections ORDER BY id DESC");
+$stmt = $conn->query("SELECT * FROM selections ORDER BY id DESC");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,7 +45,9 @@ $result = mysqli_query($conn, "SELECT * FROM selections ORDER BY id DESC");
             </thead>
             <tbody>
                 <?php
-                while ($row = mysqli_fetch_assoc($result)) {
+                $item_count = 0;
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $item_count++;
                     echo "<tr>";
                     echo "<td>" . $row['id'] . "</td>";
                     echo "<td>" . htmlspecialchars($row['customer_name']) . "</td>";
@@ -54,7 +56,7 @@ $result = mysqli_query($conn, "SELECT * FROM selections ORDER BY id DESC");
                     echo "<td><span class='status'>" . htmlspecialchars($row['status']) . "</span></td>";
                     echo "</tr>";
                 }
-                if (mysqli_num_rows($result) == 0) {
+                if ($item_count == 0) {
                     echo "<tr><td colspan='5' style='text-align:center;'>No selections found.</td></tr>";
                 }
                 ?>

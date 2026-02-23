@@ -4,15 +4,16 @@ include "db.php";
 if (!isset($_SESSION['admin'])) { header("Location: admin_login.php"); exit(); }
 
 if (isset($_POST['add'])) {
-    $day = mysqli_real_escape_string($conn, $_POST['day']);
-    $meal = mysqli_real_escape_string($conn, $_POST['meal_type']);
-    $items = mysqli_real_escape_string($conn, $_POST['items']);
+    $day = $_POST['day'];
+    $meal = $_POST['meal_type'];
+    $items = $_POST['items'];
     
-    $query = "INSERT INTO menu (day, meal_type, items) VALUES ('$day', '$meal', '$items')";
-    if (mysqli_query($conn, $query)) {
+    try {
+        $stmt = $conn->prepare("INSERT INTO menu (day, meal_type, items) VALUES (:day, :meal, :items)");
+        $stmt->execute(['day' => $day, 'meal' => $meal, 'items' => $items]);
         $msg = "Menu Item Added Successfully!";
-    } else {
-        $msg = "Error: " . mysqli_error($conn);
+    } catch(PDOException $e) {
+        $msg = "Error: " . $e->getMessage();
     }
 }
 ?>
